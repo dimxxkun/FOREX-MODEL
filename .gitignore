@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# VS Code
+.vscode/
+
+# IDEs
+.idea/
+*.swp
+*.swo
+*~
+
+# Project Specific - Logs & Results
+logs/
+*.log
+
+# Project Specific - Data & Models (keep structure, ignore content)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+models/xgboost_*.pkl
+models/ensemble/*
+!models/ensemble/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
