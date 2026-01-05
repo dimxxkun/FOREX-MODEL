@@ -112,3 +112,32 @@ logging:
   level: 'INFO'
   format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
   file: 'logs/forex_model.log'
+
+# Phase 3: Optimization Configuration
+optimization:
+  optuna_trials: 100
+  cv_folds: 5
+  early_stopping: 20
+  parallel_trials: 1
+
+# Walk-Forward Validation
+walk_forward:
+  train_days: 500      # ~2 years training window
+  test_days: 63        # ~3 months test window
+  step_days: 63        # Roll forward by 3 months
+  min_folds: 4
+
+# Market Regime Detection
+regime:
+  adx_trend_threshold: 25
+  adx_weak_threshold: 15
+  vix_high: 25
+  vix_low: 15
+  atr_high_percentile: 80
+  atr_low_percentile: 20
+
+# Advanced Ensemble V2
+ensemble_v2:
+  meta_learner: 'lightgbm'
+  calibration: 'platt'
+  dynamic_weight_window: 20  # Days for recent performance weighting
