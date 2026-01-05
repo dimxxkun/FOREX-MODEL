@@ -1,0 +1,10 @@
+{
+  "total_signals": 301,
+  "passed_confidence": 71,
+  "passed_regime": 60,
+  "passed_frequency": 59,
+  "final_passed": 60,
+  "pass_rate": 19.93355481727575,
+  "confidence_filter_rate": 76.41196013289037,
+  "regime_filter_rate": 3.6544850498338874
+}

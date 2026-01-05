@@ -4,12 +4,16 @@ Risk Management Module for Forex Signal Model.
 Position sizing, stop losses, correlation management, and risk controls.
 """
 
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
 
 from src.utils import get_logger, load_config
+
+# Project root directory (parent of src/)
+PROJECT_ROOT = Path(__file__).parent.parent
 
 
 class RiskManager:
@@ -39,8 +43,13 @@ class RiskManager:
         Initialize the RiskManager.
         
         Args:
-            config_path: Path to configuration YAML file.
+            config_path: Path to configuration YAML file (relative to project root or absolute).
         """
+        # Resolve config path relative to project root if not absolute
+        config_path_obj = Path(config_path)
+        if not config_path_obj.is_absolute():
+            config_path = str(PROJECT_ROOT / config_path)
+        
         self.config = load_config(config_path)
         self.logger = get_logger('forex_signal_model.risk_management')
         
@@ -145,6 +154,141 @@ class RiskManager:
             stop_loss = entry_price + stop_distance
         
         return stop_loss
+    
+    def get_take_profit_price(
+        self,
+        entry_price: float,
+        stop_loss: float,
+        direction: int,
+        risk_reward_ratio: float = 1.5
+    ) -> float:
+        """
+        Calculate take profit price based on risk-reward ratio.
+        
+        Args:
+            entry_price: Entry price.
+            stop_loss: Stop loss price.
+            direction: 1 for LONG, -1 for SHORT.
+            risk_reward_ratio: Target reward:risk ratio.
+        
+        Returns:
+            Take profit price.
+        """
+        risk = abs(entry_price - stop_loss)
+        reward = risk * risk_reward_ratio
+        
+        if direction == 1:  # LONG
+            take_profit = entry_price + reward
+        else:  # SHORT
+            take_profit = entry_price - reward
+        
+        return take_profit
+    
+    def calculate_trailing_stop(
+        self,
+        current_price: float,
+        entry_price: float,
+        current_stop: float,
+        direction: int,
+        atr: float,
+        trail_multiplier: float = 1.5
+    ) -> float:
+        """
+        Calculate updated trailing stop.
+        
+        Only moves stop in profitable direction, never backwards.
+        
+        Args:
+            current_price: Current market price.
+            entry_price: Original entry price.
+            current_stop: Current stop loss price.
+            direction: 1 for LONG, -1 for SHORT.
+            atr: Current ATR value.
+            trail_multiplier: ATR multiplier for trailing distance.
+        
+        Returns:
+            New trailing stop price (may be same as current).
+        """
+        trail_distance = atr * trail_multiplier
+        
+        if direction == 1:  # LONG
+            # Trail below current price
+            new_stop = current_price - trail_distance
+            # Only move stop up, never down
+            return max(current_stop, new_stop)
+        else:  # SHORT
+            # Trail above current price
+            new_stop = current_price + trail_distance
+            # Only move stop down, never up
+            return min(current_stop, new_stop)
+    
+    def check_risk_reward(
+        self,
+        entry_price: float,
+        stop_loss: float,
+        take_profit: float,
+        direction: int,
+        min_ratio: float = 1.5
+    ) -> Tuple[bool, float]:
+        """
+        Check if trade meets minimum risk-reward ratio.
+        
+        Args:
+            entry_price: Entry price.
+            stop_loss: Stop loss price.
+            take_profit: Take profit price.
+            direction: 1 for LONG, -1 for SHORT.
+            min_ratio: Minimum acceptable risk-reward ratio.
+        
+        Returns:
+            Tuple of (passes_check, actual_ratio).
+        """
+        if direction == 1:  # LONG
+            risk = entry_price - stop_loss
+            reward = take_profit - entry_price
+        else:  # SHORT
+            risk = stop_loss - entry_price
+            reward = entry_price - take_profit
+        
+        if risk <= 0:
+            return False, 0.0
+        
+        ratio = reward / risk
+        return ratio >= min_ratio, ratio
+    
+    def get_position_levels(
+        self,
+        entry_price: float,
+        atr: float,
+        direction: int,
+        risk_reward: float = 1.5
+    ) -> Dict[str, float]:
+        """
+        Get all position levels (entry, stop, take profit).
+        
+        Args:
+            entry_price: Entry price.
+            atr: Current ATR value.
+            direction: 1 for LONG, -1 for SHORT.
+            risk_reward: Target risk-reward ratio.
+        
+        Returns:
+            Dictionary with entry, stop_loss, take_profit, risk, reward.
+        """
+        stop_loss = self.get_stop_loss_price(entry_price, atr, direction)
+        take_profit = self.get_take_profit_price(entry_price, stop_loss, direction, risk_reward)
+        
+        risk = abs(entry_price - stop_loss)
+        reward = abs(take_profit - entry_price)
+        
+        return {
+            'entry': entry_price,
+            'stop_loss': stop_loss,
+            'take_profit': take_profit,
+            'risk_pips': risk,
+            'reward_pips': reward,
+            'risk_reward_ratio': reward / risk if risk > 0 else 0
+        }
     
     def check_correlation(
         self,
@@ -309,6 +453,76 @@ class RiskManager:
         
         # Use fractional Kelly for safety
         return max(0, kelly * fraction)
+    
+    def calculate_volatility_scaled_position(
+        self,
+        entry_price: float,
+        stop_loss_price: float,
+        account_value: float,
+        current_atr: float,
+        avg_atr: float,
+        base_risk_pct: float = 0.01,
+        min_position_pct: float = 0.05,
+        max_position_pct: float = 0.20
+    ) -> float:
+        """
+        Calculate position size with volatility scaling.
+        
+        Scales position inversely with current volatility:
+        - High volatility → smaller position
+        - Low volatility → larger position
+        
+        This improves risk-adjusted returns (Sharpe ratio).
+        
+        Args:
+            entry_price: Entry price.
+            stop_loss_price: Stop loss price.
+            account_value: Current account value.
+            current_atr: Current ATR value.
+            avg_atr: Average ATR over lookback period.
+            base_risk_pct: Base risk per trade (default 1%).
+            min_position_pct: Minimum position as % of account.
+            max_position_pct: Maximum position as % of account.
+        
+        Returns:
+            Volatility-adjusted position size (units).
+        """
+        if entry_price <= 0 or account_value <= 0 or avg_atr <= 0:
+            return 0
+        
+        # Calculate volatility ratio (current vs average)
+        vol_ratio = current_atr / avg_atr if avg_atr > 0 else 1.0
+        
+        # Inverse scaling: high vol = smaller position
+        # Capped between 0.5x and 2.0x adjustment
+        vol_scalar = max(0.5, min(2.0, 1.0 / vol_ratio))
+        
+        # Adjust risk for volatility
+        adjusted_risk_pct = base_risk_pct * vol_scalar
+        
+        # Calculate risk amount
+        risk_amount = account_value * adjusted_risk_pct
+        
+        # Calculate stop distance
+        stop_distance = abs(entry_price - stop_loss_price)
+        
+        if stop_distance == 0:
+            self.logger.warning("Stop distance is zero")
+            return 0
+        
+        # Calculate position size
+        position_size = risk_amount / stop_distance
+        
+        # Apply min/max constraints as fraction of account
+        max_units = (account_value * max_position_pct) / entry_price
+        min_units = (account_value * min_position_pct) / entry_price
+        
+        position_size = max(min_units, min(position_size, max_units))
+        
+        self.logger.debug(f"Vol-scaled position: vol_ratio={vol_ratio:.2f}, "
+                         f"scalar={vol_scalar:.2f}, size={position_size:.0f}")
+        
+        return position_size
     
     def validate_trade(
         self,

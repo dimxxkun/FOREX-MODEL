@@ -1,0 +1,20 @@
+[
+  {
+    "ticker": "GBPUSD",
+    "best_params": {
+      "max_depth": 8,
+      "learning_rate": 0.027788269106680776,
+      "n_estimators": 205,
+      "min_child_weight": 3,
+      "subsample": 0.9112042071121182,
+      "colsample_bytree": 0.6132922374017774,
+      "gamma": 0.429708945443976,
+      "reg_alpha": 0.1736778397531191,
+      "reg_lambda": 0.3512786202203141,
+      "scale_pos_weight": 1.1101418588285328
+    },
+    "best_value": 0.591044776119403,
+    "n_trials": 30,
+    "optimization_time": "2026-01-05T16:52:36.903664"
+  }
+]

@@ -141,3 +141,28 @@ ensemble_v2:
   meta_learner: 'lightgbm'
   calibration: 'platt'
   dynamic_weight_window: 20  # Days for recent performance weighting
+
+# Signal Filter Configuration (Phase 3 Optimization)
+signal_filter:
+  confidence_threshold: 0.50  # 50% - lowered from 60% to allow more signals
+  min_trade_gap: 1  # Minimum 1 day between trades
+  min_risk_reward: 1.5  # Minimum risk:reward ratio
+  # Allowed market regimes - matches MarketRegime enum values
+  allowed_regimes:
+    - 'strong_trend_up'
+    - 'strong_trend_down'
+    - 'weak_trend'
+    - 'low_volatility'
+    - 'ranging'  # Allow ranging with reduced size
+    - 'normal'   # Fallback
+    - 'trending' # Legacy compatibility
+
+# Position Sizing Configuration
+position_sizing:
+  method: 'volatility_scaled'  # Options: 'fixed', 'kelly', 'volatility_scaled'
+  base_risk_pct: 0.01  # 1% base risk per trade
+  volatility_lookback: 20  # Days for ATR calculation
+  volatility_target: 0.01  # Target 1% daily volatility
+  kelly_fraction: 0.25  # Use 1/4 Kelly for safety
+  min_position_pct: 0.05  # Minimum 5% position
+  max_position_pct: 0.20  # Maximum 20% position

@@ -984,6 +984,102 @@ class FeatureEngine:
 
 
 # ============================================================================
+# UTILITY FUNCTIONS
+# ============================================================================
+
+def align_features_for_model(
+    df: pd.DataFrame,
+    expected_features: List[str],
+    fill_value: float = 0.0
+) -> pd.DataFrame:
+    """
+    Align DataFrame features to match model's expected feature set.
+    
+    This function ensures the DataFrame has exactly the same features
+    in the same order as the model expects, adding missing features
+    with fill values and removing extra features.
+    
+    Args:
+        df: Input DataFrame with features.
+        expected_features: List of feature names the model expects.
+        fill_value: Value to use for missing features (default 0.0).
+    
+    Returns:
+        DataFrame with aligned features in correct order.
+    
+    Example:
+        >>> model_features = model.get_booster().feature_names
+        >>> X_test_aligned = align_features_for_model(X_test, model_features)
+        >>> predictions = model.predict(X_test_aligned)
+    """
+    df_aligned = df.copy()
+    
+    # Find missing features
+    current_features = set(df_aligned.columns)
+    expected_set = set(expected_features)
+    
+    missing_features = expected_set - current_features
+    extra_features = current_features - expected_set
+    
+    # Add missing features with fill value
+    if missing_features:
+        print(f"⚠️ Adding {len(missing_features)} missing features with value {fill_value}")
+        for feat in missing_features:
+            df_aligned[feat] = fill_value
+    
+    # Report extra features (they will be dropped)
+    if extra_features:
+        print(f"ℹ️ Removing {len(extra_features)} extra features not in model")
+    
+    # Select only expected features in correct order
+    df_aligned = df_aligned[expected_features]
+    
+    return df_aligned
+
+
+def add_calendar_features(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Add calendar/time-based features to a DataFrame with DatetimeIndex.
+    
+    Args:
+        df: DataFrame with DatetimeIndex.
+    
+    Returns:
+        DataFrame with added calendar features.
+    """
+    if not isinstance(df.index, pd.DatetimeIndex):
+        raise ValueError("DataFrame must have a DatetimeIndex")
+    
+    result = df.copy()
+    
+    # Day of week (0=Monday, 4=Friday)
+    result['day_of_week'] = df.index.dayofweek
+    
+    # One-hot encode trading days
+    for i in range(5):  # Only weekdays 0-4
+        result[f'is_day_{i}'] = (df.index.dayofweek == i).astype(int)
+    
+    # Month features
+    result['month'] = df.index.month
+    result['month_sin'] = np.sin(2 * np.pi * df.index.month / 12)
+    result['month_cos'] = np.cos(2 * np.pi * df.index.month / 12)
+    
+    # Quarter
+    result['quarter'] = df.index.quarter
+    
+    # Week of year
+    result['week_of_year'] = df.index.isocalendar().week.astype(int)
+    
+    # End/start of month/year
+    result['is_year_end'] = ((df.index.month == 12) & (df.index.day >= 20)).astype(int)
+    result['day_of_month'] = df.index.day
+    result['is_month_end'] = (df.index.day >= 25).astype(int)
+    result['is_month_start'] = (df.index.day <= 5).astype(int)
+    
+    return result
+
+
+# ============================================================================
 # MAIN EXECUTION
 # ============================================================================
 
