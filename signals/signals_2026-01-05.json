@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-01-05T17:55:24.996016",
+  "generated_at": "2026-01-05T18:15:03.226964",
   "account_value": 10000,
   "signals": [
     {
       "ticker": "GBPUSD",
       "date": "2026-01-02",
-      "timestamp": "2026-01-05T17:55:24.963414",
+      "timestamp": "2026-01-05T18:15:03.194848",
       "signal": "HOLD",
       "direction": 0,
       "confidence": 0,
@@ -19,7 +19,7 @@
     {
       "ticker": "EURUSD",
       "date": "2026-01-02",
-      "timestamp": "2026-01-05T17:55:24.979713",
+      "timestamp": "2026-01-05T18:15:03.210677",
       "signal": "HOLD",
       "direction": 0,
       "confidence": 0,
@@ -33,7 +33,7 @@
     {
       "ticker": "GC=F",
       "date": "2026-01-02",
-      "timestamp": "2026-01-05T17:55:24.995804",
+      "timestamp": "2026-01-05T18:15:03.226737",
       "signal": "HOLD",
       "direction": 0,
       "confidence": 0,

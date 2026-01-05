@@ -427,6 +427,8 @@ def main():
                        help='Account value for position sizing')
     parser.add_argument('--config', type=str, default='config/config.yaml',
                        help='Path to config file')
+    parser.add_argument('--notify', action='store_true',
+                       help='Send Telegram notification for signals')
     parser.add_argument('-v', '--verbose', action='store_true',
                        help='Enable verbose logging')
     
@@ -440,6 +442,27 @@ def main():
     # Generate signals
     generator = SignalGenerator(args.config)
     signals, output_path = generator.run(args.account)
+    
+    # Send Telegram notification if enabled
+    if args.notify:
+        try:
+            from telegram_notifier import TelegramNotifier
+            notifier = TelegramNotifier()
+            
+            # Send individual signals for BUY/SELL
+            actionable_signals = [s for s in signals if s['signal'] != 'HOLD']
+            
+            if actionable_signals:
+                for signal in actionable_signals:
+                    notifier.send_signal(signal)
+                print("📱 Telegram notifications sent!")
+            else:
+                # Send summary that no trades today
+                notifier.send_daily_summary(signals)
+                print("📱 Daily summary sent to Telegram")
+        except Exception as e:
+            print(f"⚠️ Telegram notification failed: {e}")
+            print("   Run: python telegram_notifier.py --setup")
     
     return signals
 

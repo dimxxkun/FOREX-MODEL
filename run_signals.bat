@@ -5,7 +5,7 @@ echo ============================================================
 echo.
 
 cd /d "%~dp0"
-python signal_generator.py --account 10000
+python signal_generator.py --account 10000 --notify
 
 echo.
 echo ============================================================
