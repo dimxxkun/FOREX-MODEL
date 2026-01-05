@@ -1,0 +1,114 @@
+# Data Configuration
+data:
+  tickers:
+    main:
+      - GBPUSD=X
+      - EURUSD=X
+      - GC=F        # Gold Futures (XAUUSD=X is delisted)
+    intermarket:
+      - DX-Y.NYB    # US Dollar Index
+      - ^VIX         # Volatility Index
+      - ^TNX         # US 10Y Treasury Yield
+      - CL=F         # WTI Crude Oil
+  
+  period: '10y'
+  interval: '1d'
+  
+  paths:
+    raw: 'data/raw/'
+    processed: 'data/processed/'
+    combined: 'data/processed/combined_data.parquet'
+    features: 'data/processed/features.parquet'
+
+# Feature Engineering Configuration
+features:
+  technical:
+    sma_periods: [20, 50, 200]
+    ema_periods: [12, 26]
+    rsi_period: 14
+    macd: [12, 26, 9]
+    bollinger: [20, 2]
+    atr_period: 14
+    stochastic: [14, 3, 3]
+    adx_period: 14
+    # Additional configurable parameters
+    slope_short_period: 5
+    slope_long_period: 10
+    volume_sma_period: 20
+    price_range_period: 20
+    percentile_window: 50
+  
+  multitimeframe:
+    weekly_sma: [50, 200]
+  
+  intermarket:
+    correlation_window: 20
+    lag_periods: [1, 5]
+    vix_percentile_window: 252
+
+# Risk Management
+risk:
+  max_risk_per_trade: 0.01  # 1%
+  max_positions: 2
+  max_open_positions: 2
+  correlation_threshold: 0.7
+  atr_stop_multiplier: 2.0
+  max_holding_days: 5
+  max_drawdown_pct: 20.0
+  drawdown_circuit_breaker: 0.15  # Stop trading at 15% DD
+  min_confidence_to_trade: 40
+
+# Model Configuration
+models:
+  technical_rules:
+    sma_crossover_fast: 50
+    sma_crossover_slow: 200
+    rsi_oversold: 30
+    rsi_overbought: 70
+    bb_entry_threshold: 0.2  # Enter near 20% of BB width
+    min_conditions: 3
+    vix_threshold: 25
+    atr_stop_multiplier: 2.0
+    
+  xgboost:
+    max_depth: 5
+    learning_rate: 0.05
+    n_estimators: 200
+    early_stopping_rounds: 20
+    max_features: 80
+    
+  ensemble:
+    technical_weight: 0.4
+    ml_weight: 0.6
+    disagreement_penalty: 20  # Reduce confidence by 20%
+    agreement_bonus: 10
+
+# Backtesting Configuration
+backtest:
+  initial_capital: 10000
+  transaction_costs:
+    GBPUSD: 0.0002  # 2 pips
+    EURUSD: 0.00015  # 1.5 pips
+    GC: 0.00025  # 0.025%
+  slippage_pips: 1
+  max_position_pct: 0.20  # Max 20% account per trade
+
+# Legacy Model Config (for compatibility)
+model:
+  train_test_split: 0.2
+  validation_split: 0.1
+  rolling_window_years: 4
+  min_train_samples: 500
+  retrain_frequency_days: 30
+
+# Signal Generation
+signals:
+  signal_time: '17:00'  # 5 PM EST
+  timezone: 'US/Eastern'
+  min_confidence: 40  # Minimum confidence to trade
+
+# Logging
+logging:
+  level: 'INFO'
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  file: 'logs/forex_model.log'
