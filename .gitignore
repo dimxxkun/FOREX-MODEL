@@ -53,3 +53,6 @@ models/ensemble/*
 # OS
 .DS_Store
 Thumbs.db
+
+# Secrets - DO NOT COMMIT
+config/telegram_config.json
