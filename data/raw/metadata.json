@@ -1,0 +1,23 @@
+{
+  "download_timestamp": "2026-01-05T10:55:34.227107",
+  "tickers": [
+    "GBPUSD=X",
+    "EURUSD=X",
+    "GC=F",
+    "DX-Y.NYB",
+    "^VIX",
+    "^TNX",
+    "CL=F"
+  ],
+  "period": "10y",
+  "interval": "1d",
+  "rows_per_ticker": {
+    "GBPUSD=X": 2602,
+    "EURUSD=X": 2602,
+    "GC=F": 2514,
+    "DX-Y.NYB": 2516,
+    "^VIX": 2515,
+    "^TNX": 2514,
+    "CL=F": 2515
+  }
+}

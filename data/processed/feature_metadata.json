@@ -1,0 +1,678 @@
+{
+  "GBPUSD_SMA_20": {
+    "category": "trend",
+    "description": "20-day Simple Moving Average"
+  },
+  "GBPUSD_SMA_50": {
+    "category": "trend",
+    "description": "50-day Simple Moving Average"
+  },
+  "GBPUSD_SMA_200": {
+    "category": "trend",
+    "description": "200-day Simple Moving Average"
+  },
+  "GBPUSD_EMA_12": {
+    "category": "trend",
+    "description": "12-day Exponential Moving Average"
+  },
+  "GBPUSD_EMA_26": {
+    "category": "trend",
+    "description": "26-day Exponential Moving Average"
+  },
+  "GBPUSD_Price_vs_SMA_20": {
+    "category": "trend",
+    "description": "Price distance from SMA20 in %"
+  },
+  "GBPUSD_Price_vs_SMA_50": {
+    "category": "trend",
+    "description": "Price distance from SMA50 in %"
+  },
+  "GBPUSD_Price_vs_SMA_200": {
+    "category": "trend",
+    "description": "Price distance from SMA200 in %"
+  },
+  "GBPUSD_SMA_Cross_20_50": {
+    "category": "trend",
+    "description": "SMA20 > SMA50 (1=bullish)"
+  },
+  "GBPUSD_SMA_Cross_50_200": {
+    "category": "trend",
+    "description": "SMA50 > SMA200 (1=bullish, golden cross)"
+  },
+  "GBPUSD_SMA_20_Slope": {
+    "category": "trend",
+    "description": "5-day slope of SMA20"
+  },
+  "GBPUSD_SMA_50_Slope": {
+    "category": "trend",
+    "description": "10-day slope of SMA50"
+  },
+  "GBPUSD_RSI": {
+    "category": "momentum",
+    "description": "14-day RSI"
+  },
+  "GBPUSD_MACD": {
+    "category": "momentum",
+    "description": "MACD line"
+  },
+  "GBPUSD_MACD_Signal": {
+    "category": "momentum",
+    "description": "MACD signal line"
+  },
+  "GBPUSD_MACD_Histogram": {
+    "category": "momentum",
+    "description": "MACD histogram"
+  },
+  "GBPUSD_Stoch_K": {
+    "category": "momentum",
+    "description": "Stochastic %K"
+  },
+  "GBPUSD_Stoch_D": {
+    "category": "momentum",
+    "description": "Stochastic %D"
+  },
+  "GBPUSD_ROC_10": {
+    "category": "momentum",
+    "description": "10-day Rate of Change"
+  },
+  "GBPUSD_ROC_20": {
+    "category": "momentum",
+    "description": "20-day Rate of Change"
+  },
+  "GBPUSD_ATR": {
+    "category": "volatility",
+    "description": "14-day ATR"
+  },
+  "GBPUSD_ATR_Pct": {
+    "category": "volatility",
+    "description": "ATR as % of price"
+  },
+  "GBPUSD_BB_Upper": {
+    "category": "volatility",
+    "description": "Bollinger Upper Band"
+  },
+  "GBPUSD_BB_Lower": {
+    "category": "volatility",
+    "description": "Bollinger Lower Band"
+  },
+  "GBPUSD_BB_Width": {
+    "category": "volatility",
+    "description": "Bollinger Band Width"
+  },
+  "GBPUSD_BB_PctB": {
+    "category": "volatility",
+    "description": "Bollinger %B (0-1)"
+  },
+  "GBPUSD_ADX": {
+    "category": "volatility",
+    "description": "14-day ADX"
+  },
+  "GBPUSD_DI_Plus": {
+    "category": "volatility",
+    "description": "Directional +DI"
+  },
+  "GBPUSD_DI_Minus": {
+    "category": "volatility",
+    "description": "Directional -DI"
+  },
+  "GBPUSD_OBV": {
+    "category": "volume",
+    "description": "On-Balance Volume"
+  },
+  "GBPUSD_Volume_Ratio": {
+    "category": "volume",
+    "description": "Volume / 20-day avg volume"
+  },
+  "GBPUSD_Price_Position": {
+    "category": "pattern",
+    "description": "Price position in 20-day range (0=low, 1=high)"
+  },
+  "GBPUSD_Dist_to_High": {
+    "category": "pattern",
+    "description": "Distance to 20-day high (%)"
+  },
+  "GBPUSD_Dist_to_Low": {
+    "category": "pattern",
+    "description": "Distance to 20-day low (%)"
+  },
+  "GBPUSD_Return_1d": {
+    "category": "return",
+    "description": "1-day return (%)"
+  },
+  "GBPUSD_Return_5d": {
+    "category": "return",
+    "description": "5-day return (%)"
+  },
+  "GBPUSD_Return_20d": {
+    "category": "return",
+    "description": "20-day return (%)"
+  },
+  "GBPUSD_Volatility_20": {
+    "category": "volatility",
+    "description": "20-day rolling volatility of returns"
+  },
+  "EURUSD_SMA_20": {
+    "category": "trend",
+    "description": "20-day Simple Moving Average"
+  },
+  "EURUSD_SMA_50": {
+    "category": "trend",
+    "description": "50-day Simple Moving Average"
+  },
+  "EURUSD_SMA_200": {
+    "category": "trend",
+    "description": "200-day Simple Moving Average"
+  },
+  "EURUSD_EMA_12": {
+    "category": "trend",
+    "description": "12-day Exponential Moving Average"
+  },
+  "EURUSD_EMA_26": {
+    "category": "trend",
+    "description": "26-day Exponential Moving Average"
+  },
+  "EURUSD_Price_vs_SMA_20": {
+    "category": "trend",
+    "description": "Price distance from SMA20 in %"
+  },
+  "EURUSD_Price_vs_SMA_50": {
+    "category": "trend",
+    "description": "Price distance from SMA50 in %"
+  },
+  "EURUSD_Price_vs_SMA_200": {
+    "category": "trend",
+    "description": "Price distance from SMA200 in %"
+  },
+  "EURUSD_SMA_Cross_20_50": {
+    "category": "trend",
+    "description": "SMA20 > SMA50 (1=bullish)"
+  },
+  "EURUSD_SMA_Cross_50_200": {
+    "category": "trend",
+    "description": "SMA50 > SMA200 (1=bullish, golden cross)"
+  },
+  "EURUSD_SMA_20_Slope": {
+    "category": "trend",
+    "description": "5-day slope of SMA20"
+  },
+  "EURUSD_SMA_50_Slope": {
+    "category": "trend",
+    "description": "10-day slope of SMA50"
+  },
+  "EURUSD_RSI": {
+    "category": "momentum",
+    "description": "14-day RSI"
+  },
+  "EURUSD_MACD": {
+    "category": "momentum",
+    "description": "MACD line"
+  },
+  "EURUSD_MACD_Signal": {
+    "category": "momentum",
+    "description": "MACD signal line"
+  },
+  "EURUSD_MACD_Histogram": {
+    "category": "momentum",
+    "description": "MACD histogram"
+  },
+  "EURUSD_Stoch_K": {
+    "category": "momentum",
+    "description": "Stochastic %K"
+  },
+  "EURUSD_Stoch_D": {
+    "category": "momentum",
+    "description": "Stochastic %D"
+  },
+  "EURUSD_ROC_10": {
+    "category": "momentum",
+    "description": "10-day Rate of Change"
+  },
+  "EURUSD_ROC_20": {
+    "category": "momentum",
+    "description": "20-day Rate of Change"
+  },
+  "EURUSD_ATR": {
+    "category": "volatility",
+    "description": "14-day ATR"
+  },
+  "EURUSD_ATR_Pct": {
+    "category": "volatility",
+    "description": "ATR as % of price"
+  },
+  "EURUSD_BB_Upper": {
+    "category": "volatility",
+    "description": "Bollinger Upper Band"
+  },
+  "EURUSD_BB_Lower": {
+    "category": "volatility",
+    "description": "Bollinger Lower Band"
+  },
+  "EURUSD_BB_Width": {
+    "category": "volatility",
+    "description": "Bollinger Band Width"
+  },
+  "EURUSD_BB_PctB": {
+    "category": "volatility",
+    "description": "Bollinger %B (0-1)"
+  },
+  "EURUSD_ADX": {
+    "category": "volatility",
+    "description": "14-day ADX"
+  },
+  "EURUSD_DI_Plus": {
+    "category": "volatility",
+    "description": "Directional +DI"
+  },
+  "EURUSD_DI_Minus": {
+    "category": "volatility",
+    "description": "Directional -DI"
+  },
+  "EURUSD_OBV": {
+    "category": "volume",
+    "description": "On-Balance Volume"
+  },
+  "EURUSD_Volume_Ratio": {
+    "category": "volume",
+    "description": "Volume / 20-day avg volume"
+  },
+  "EURUSD_Price_Position": {
+    "category": "pattern",
+    "description": "Price position in 20-day range (0=low, 1=high)"
+  },
+  "EURUSD_Dist_to_High": {
+    "category": "pattern",
+    "description": "Distance to 20-day high (%)"
+  },
+  "EURUSD_Dist_to_Low": {
+    "category": "pattern",
+    "description": "Distance to 20-day low (%)"
+  },
+  "EURUSD_Return_1d": {
+    "category": "return",
+    "description": "1-day return (%)"
+  },
+  "EURUSD_Return_5d": {
+    "category": "return",
+    "description": "5-day return (%)"
+  },
+  "EURUSD_Return_20d": {
+    "category": "return",
+    "description": "20-day return (%)"
+  },
+  "EURUSD_Volatility_20": {
+    "category": "volatility",
+    "description": "20-day rolling volatility of returns"
+  },
+  "GC=F_SMA_20": {
+    "category": "trend",
+    "description": "20-day Simple Moving Average"
+  },
+  "GC=F_SMA_50": {
+    "category": "trend",
+    "description": "50-day Simple Moving Average"
+  },
+  "GC=F_SMA_200": {
+    "category": "trend",
+    "description": "200-day Simple Moving Average"
+  },
+  "GC=F_EMA_12": {
+    "category": "trend",
+    "description": "12-day Exponential Moving Average"
+  },
+  "GC=F_EMA_26": {
+    "category": "trend",
+    "description": "26-day Exponential Moving Average"
+  },
+  "GC=F_Price_vs_SMA_20": {
+    "category": "trend",
+    "description": "Price distance from SMA20 in %"
+  },
+  "GC=F_Price_vs_SMA_50": {
+    "category": "trend",
+    "description": "Price distance from SMA50 in %"
+  },
+  "GC=F_Price_vs_SMA_200": {
+    "category": "trend",
+    "description": "Price distance from SMA200 in %"
+  },
+  "GC=F_SMA_Cross_20_50": {
+    "category": "trend",
+    "description": "SMA20 > SMA50 (1=bullish)"
+  },
+  "GC=F_SMA_Cross_50_200": {
+    "category": "trend",
+    "description": "SMA50 > SMA200 (1=bullish, golden cross)"
+  },
+  "GC=F_SMA_20_Slope": {
+    "category": "trend",
+    "description": "5-day slope of SMA20"
+  },
+  "GC=F_SMA_50_Slope": {
+    "category": "trend",
+    "description": "10-day slope of SMA50"
+  },
+  "GC=F_RSI": {
+    "category": "momentum",
+    "description": "14-day RSI"
+  },
+  "GC=F_MACD": {
+    "category": "momentum",
+    "description": "MACD line"
+  },
+  "GC=F_MACD_Signal": {
+    "category": "momentum",
+    "description": "MACD signal line"
+  },
+  "GC=F_MACD_Histogram": {
+    "category": "momentum",
+    "description": "MACD histogram"
+  },
+  "GC=F_Stoch_K": {
+    "category": "momentum",
+    "description": "Stochastic %K"
+  },
+  "GC=F_Stoch_D": {
+    "category": "momentum",
+    "description": "Stochastic %D"
+  },
+  "GC=F_ROC_10": {
+    "category": "momentum",
+    "description": "10-day Rate of Change"
+  },
+  "GC=F_ROC_20": {
+    "category": "momentum",
+    "description": "20-day Rate of Change"
+  },
+  "GC=F_ATR": {
+    "category": "volatility",
+    "description": "14-day ATR"
+  },
+  "GC=F_ATR_Pct": {
+    "category": "volatility",
+    "description": "ATR as % of price"
+  },
+  "GC=F_BB_Upper": {
+    "category": "volatility",
+    "description": "Bollinger Upper Band"
+  },
+  "GC=F_BB_Lower": {
+    "category": "volatility",
+    "description": "Bollinger Lower Band"
+  },
+  "GC=F_BB_Width": {
+    "category": "volatility",
+    "description": "Bollinger Band Width"
+  },
+  "GC=F_BB_PctB": {
+    "category": "volatility",
+    "description": "Bollinger %B (0-1)"
+  },
+  "GC=F_ADX": {
+    "category": "volatility",
+    "description": "14-day ADX"
+  },
+  "GC=F_DI_Plus": {
+    "category": "volatility",
+    "description": "Directional +DI"
+  },
+  "GC=F_DI_Minus": {
+    "category": "volatility",
+    "description": "Directional -DI"
+  },
+  "GC=F_OBV": {
+    "category": "volume",
+    "description": "On-Balance Volume"
+  },
+  "GC=F_Volume_Ratio": {
+    "category": "volume",
+    "description": "Volume / 20-day avg volume"
+  },
+  "GC=F_Price_Position": {
+    "category": "pattern",
+    "description": "Price position in 20-day range (0=low, 1=high)"
+  },
+  "GC=F_Dist_to_High": {
+    "category": "pattern",
+    "description": "Distance to 20-day high (%)"
+  },
+  "GC=F_Dist_to_Low": {
+    "category": "pattern",
+    "description": "Distance to 20-day low (%)"
+  },
+  "GC=F_Return_1d": {
+    "category": "return",
+    "description": "1-day return (%)"
+  },
+  "GC=F_Return_5d": {
+    "category": "return",
+    "description": "5-day return (%)"
+  },
+  "GC=F_Return_20d": {
+    "category": "return",
+    "description": "20-day return (%)"
+  },
+  "GC=F_Volatility_20": {
+    "category": "volatility",
+    "description": "20-day rolling volatility of returns"
+  },
+  "GBPUSD_Weekly_SMA_50": {
+    "category": "multitimeframe",
+    "description": "Weekly 50-period SMA (daily equivalent)"
+  },
+  "GBPUSD_Weekly_SMA_200": {
+    "category": "multitimeframe",
+    "description": "Weekly 200-period SMA (daily equivalent)"
+  },
+  "GBPUSD_Weekly_Trend_Align": {
+    "category": "multitimeframe",
+    "description": "Weekly trend alignment (1=bullish, -1=bearish)"
+  },
+  "GBPUSD_Monthly_Return": {
+    "category": "multitimeframe",
+    "description": "21-day (monthly) return (%)"
+  },
+  "GBPUSD_Monthly_Volatility": {
+    "category": "multitimeframe",
+    "description": "21-day annualized volatility"
+  },
+  "EURUSD_Weekly_SMA_50": {
+    "category": "multitimeframe",
+    "description": "Weekly 50-period SMA (daily equivalent)"
+  },
+  "EURUSD_Weekly_SMA_200": {
+    "category": "multitimeframe",
+    "description": "Weekly 200-period SMA (daily equivalent)"
+  },
+  "EURUSD_Weekly_Trend_Align": {
+    "category": "multitimeframe",
+    "description": "Weekly trend alignment (1=bullish, -1=bearish)"
+  },
+  "EURUSD_Monthly_Return": {
+    "category": "multitimeframe",
+    "description": "21-day (monthly) return (%)"
+  },
+  "EURUSD_Monthly_Volatility": {
+    "category": "multitimeframe",
+    "description": "21-day annualized volatility"
+  },
+  "GC=F_Weekly_SMA_50": {
+    "category": "multitimeframe",
+    "description": "Weekly 50-period SMA (daily equivalent)"
+  },
+  "GC=F_Weekly_SMA_200": {
+    "category": "multitimeframe",
+    "description": "Weekly 200-period SMA (daily equivalent)"
+  },
+  "GC=F_Weekly_Trend_Align": {
+    "category": "multitimeframe",
+    "description": "Weekly trend alignment (1=bullish, -1=bearish)"
+  },
+  "GC=F_Monthly_Return": {
+    "category": "multitimeframe",
+    "description": "21-day (monthly) return (%)"
+  },
+  "GC=F_Monthly_Volatility": {
+    "category": "multitimeframe",
+    "description": "21-day annualized volatility"
+  },
+  "DXY_Return_1d": {
+    "category": "intermarket",
+    "description": "DXY 1-day return (%)"
+  },
+  "DXY_Return_5d": {
+    "category": "intermarket",
+    "description": "DXY 5-day return (%)"
+  },
+  "GBPUSD_DXY_Corr": {
+    "category": "intermarket",
+    "description": "GBPUSD vs DXY 20-day correlation"
+  },
+  "EURUSD_DXY_Corr": {
+    "category": "intermarket",
+    "description": "EURUSD vs DXY 20-day correlation"
+  },
+  "GC=F_DXY_Corr": {
+    "category": "intermarket",
+    "description": "GC=F vs DXY 20-day correlation"
+  },
+  "GBPUSD_vs_DXY": {
+    "category": "intermarket",
+    "description": "GBPUSD relative strength vs DXY"
+  },
+  "EURUSD_vs_DXY": {
+    "category": "intermarket",
+    "description": "EURUSD relative strength vs DXY"
+  },
+  "GC=F_vs_DXY": {
+    "category": "intermarket",
+    "description": "GC=F relative strength vs DXY"
+  },
+  "VIX_Level": {
+    "category": "intermarket",
+    "description": "VIX current value"
+  },
+  "VIX_Change_1d": {
+    "category": "intermarket",
+    "description": "VIX 1-day change"
+  },
+  "VIX_Change_5d": {
+    "category": "intermarket",
+    "description": "VIX 5-day change"
+  },
+  "VIX_Regime": {
+    "category": "intermarket",
+    "description": "VIX regime (0=low, 1=medium, 2=high)"
+  },
+  "VIX_Percentile": {
+    "category": "intermarket",
+    "description": "VIX percentile over 252 days"
+  },
+  "TNX_Level": {
+    "category": "intermarket",
+    "description": "10Y Treasury Yield"
+  },
+  "TNX_Change_1d": {
+    "category": "intermarket",
+    "description": "10Y yield 1-day change"
+  },
+  "TNX_Change_5d": {
+    "category": "intermarket",
+    "description": "10Y yield 5-day change"
+  },
+  "GBPUSD_EURUSD_Corr": {
+    "category": "intermarket",
+    "description": "GBPUSD vs EURUSD 20-day correlation"
+  },
+  "GBPUSD_GC=F_Corr": {
+    "category": "intermarket",
+    "description": "GBPUSD vs GC=F 20-day correlation"
+  },
+  "EURUSD_GC=F_Corr": {
+    "category": "intermarket",
+    "description": "EURUSD vs GC=F 20-day correlation"
+  },
+  "GBPUSD_ZScore": {
+    "category": "derived",
+    "description": "Z-score from 20-day mean"
+  },
+  "GBPUSD_ATR_Percentile": {
+    "category": "derived",
+    "description": "ATR percentile over 50 days (0-100)"
+  },
+  "GBPUSD_Trend_Strength": {
+    "category": "derived",
+    "description": "ADX \u00d7 direction (positive=uptrend)"
+  },
+  "GBPUSD_Momentum_Composite": {
+    "category": "derived",
+    "description": "Avg of normalized RSI and Stochastic (-1 to 1)"
+  },
+  "GBPUSD_BB_Width_Percentile": {
+    "category": "derived",
+    "description": "BB Width percentile over 50 days (0-100)"
+  },
+  "EURUSD_ZScore": {
+    "category": "derived",
+    "description": "Z-score from 20-day mean"
+  },
+  "EURUSD_ATR_Percentile": {
+    "category": "derived",
+    "description": "ATR percentile over 50 days (0-100)"
+  },
+  "EURUSD_Trend_Strength": {
+    "category": "derived",
+    "description": "ADX \u00d7 direction (positive=uptrend)"
+  },
+  "EURUSD_Momentum_Composite": {
+    "category": "derived",
+    "description": "Avg of normalized RSI and Stochastic (-1 to 1)"
+  },
+  "EURUSD_BB_Width_Percentile": {
+    "category": "derived",
+    "description": "BB Width percentile over 50 days (0-100)"
+  },
+  "GC=F_ZScore": {
+    "category": "derived",
+    "description": "Z-score from 20-day mean"
+  },
+  "GC=F_ATR_Percentile": {
+    "category": "derived",
+    "description": "ATR percentile over 50 days (0-100)"
+  },
+  "GC=F_Trend_Strength": {
+    "category": "derived",
+    "description": "ADX \u00d7 direction (positive=uptrend)"
+  },
+  "GC=F_Momentum_Composite": {
+    "category": "derived",
+    "description": "Avg of normalized RSI and Stochastic (-1 to 1)"
+  },
+  "GC=F_BB_Width_Percentile": {
+    "category": "derived",
+    "description": "BB Width percentile over 50 days (0-100)"
+  },
+  "GBPUSD_Target_Direction": {
+    "category": "target",
+    "description": "Next day direction (1=up, 0=down)"
+  },
+  "GBPUSD_Target_Return": {
+    "category": "target",
+    "description": "Next day return (%)"
+  },
+  "EURUSD_Target_Direction": {
+    "category": "target",
+    "description": "Next day direction (1=up, 0=down)"
+  },
+  "EURUSD_Target_Return": {
+    "category": "target",
+    "description": "Next day return (%)"
+  },
+  "GC=F_Target_Direction": {
+    "category": "target",
+    "description": "Next day direction (1=up, 0=down)"
+  },
+  "GC=F_Target_Return": {
+    "category": "target",
+    "description": "Next day return (%)"
+  }
+}
