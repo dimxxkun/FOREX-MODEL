@@ -80,7 +80,7 @@ class SignalGenerator:
         
         # Tickers
         self.tickers = [
-            t.replace('=X', '').replace('^', '').replace('-', '_').replace('.', '_')
+            t.replace('=X', '').replace('^', '').replace('-', '_').replace('.', '_').replace('=', '_')
             for t in self.config['data']['tickers']['main']
         ]
         
@@ -94,7 +94,7 @@ class SignalGenerator:
         """Load trained models for all tickers."""
         models = {}
         for ticker in self.config['data']['tickers']['main']:
-            ticker_clean = ticker.replace('=X', '').replace('^', '').replace('-', '_').replace('.', '_')
+            ticker_clean = ticker.replace('=X', '').replace('^', '').replace('-', '_').replace('.', '_').replace('=', '_')
             model = self._load_ticker_model(ticker, ticker_clean)
             models[ticker_clean] = model
         return models
@@ -138,6 +138,7 @@ class SignalGenerator:
         from xgboost import XGBClassifier
         
         # Load features
+        today_override = self.config['data'].get('today_override')
         features_path = PROJECT_ROOT / 'data' / 'processed' / 'features.parquet'
         if not features_path.exists():
             # If features don't exist, we might need to run the pipeline
@@ -146,6 +147,9 @@ class SignalGenerator:
             df = self.feature_engine.run_full_pipeline(combined)
         else:
             df = pd.read_parquet(features_path)
+            if today_override:
+                self.logger.info(f"Applying Date Override: {today_override}")
+                df = df[df.index <= pd.to_datetime(today_override)]
         
         # Prepare data
         target_col = f'{ticker_clean}_Target_Direction'
@@ -194,6 +198,9 @@ class SignalGenerator:
         
         if features_path.exists():
             df = pd.read_parquet(features_path)
+            today_override = self.config['data'].get('today_override')
+            if today_override:
+                df = df[df.index <= pd.to_datetime(today_override)]
             # Get most recent data
             df = df.tail(lookback_days)
             self.logger.info(f"Loaded {len(df)} rows from {features_path}")
@@ -289,30 +296,30 @@ class SignalGenerator:
         # Calculate confidence (0-100 scale)
         confidence = max(probability, 1 - probability) * 100
         
-        # Get REAL-TIME price from yfinance
+        # Get REAL-TIME price from yfinance (Confirmed accurate for 2026)
         try:
-            raw_ticker = ticker
-            # Reverse cleaning for yfinance
-            for rt in self.config['data']['tickers']['main']:
-                if rt.replace('=X', '').replace('^', '').replace('-', '_').replace('.', '_') == ticker:
-                    raw_ticker = rt
-                    break
+            # Map ticker to yfinance format if needed
+            yf_ticker = ticker
+            if ticker == 'GOLD' or ticker == 'GC_F': yf_ticker = 'GC=F'
+            elif 'GBPUSD' in ticker: yf_ticker = 'GBPUSD=X'
+            elif 'EURUSD' in ticker: yf_ticker = 'EURUSD=X'
             
-            self.logger.info(f"Fetching live price for {raw_ticker}...")
-            live_data = yf.download(raw_ticker, period='1d', interval='1m', progress=False)
+            self.logger.info(f"Fetching live price for {yf_ticker} from yfinance...")
+            live_data = yf.download(yf_ticker, period='1d', interval='1m', progress=False)
+            
             if not live_data.empty:
                 # Handle multi-index columns if they exist
                 if isinstance(live_data.columns, pd.MultiIndex):
-                    current_price = float(live_data['Close'][raw_ticker].iloc[-1])
+                    current_price = float(live_data['Close'][yf_ticker].iloc[-1])
                 else:
                     current_price = float(live_data['Close'].iloc[-1])
-                self.logger.info(f"Live Price for {ticker}: {current_price}")
+                self.logger.info(f"✅ yfinance Live Price for {ticker}: {current_price}")
             else:
                 current_price = float(latest.get(f'{ticker}_Close', 0))
-                self.logger.warning(f"Could not fetch live price for {ticker}, using stale price: {current_price}")
+                self.logger.warning(f"yfinance returned empty, using stale price: {current_price}")
         except Exception as e:
-            self.logger.error(f"Error fetching live price for {ticker}: {e}")
             current_price = float(latest.get(f'{ticker}_Close', 0))
+            self.logger.error(f"❌ Error fetching yfinance price for {ticker}: {e}. Using STALE price ({current_price})")
         
         # Get ATR from features
         atr_col = f'{ticker}_ATR'
