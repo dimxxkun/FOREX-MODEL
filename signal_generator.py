@@ -248,10 +248,8 @@ class SignalGenerator:
             # Check if we stored feature names in our custom attribute or booster
             if hasattr(model, 'feature_names_from_dict'):
                 model_features = model.feature_names_from_dict
-                self.logger.info(f"Using feature names from dict for {ticker}: {len(model_features)} features")
             else:
                 model_features = model.get_booster().feature_names
-                self.logger.info(f"Using feature names from booster for {ticker}: {len(model_features)} features")
             
             # Create a new DataFrame with ONLY the columns the model expects, in the correct order
             X_aligned = pd.DataFrame(index=X.index)
@@ -263,10 +261,9 @@ class SignalGenerator:
                     X_aligned[feat] = 0.0
             
             X = X_aligned
-            self.logger.info(f"Features aligned for {ticker}. Shape: {X.shape}")
+            self.logger.debug(f"Features aligned for {ticker} using {len(model_features)} features")
         except Exception as e:
             self.logger.warning(f"Could not align features for {ticker}: {e}")
-            # If alignment fails, we still try with what we have (though it might fail prediction)
             pass
 
         # Get prediction
@@ -274,15 +271,20 @@ class SignalGenerator:
             # Use native booster to bypass scikit-learn wrapper strictness on feature names
             dmatrix = xgb.DMatrix(X)
             # prediction results from booster.predict is probabilities for binary classification
-            probability = model.get_booster().predict(dmatrix)[0]
-            prediction = 1 if probability > 0.5 else 0
+            output = model.get_booster().predict(dmatrix)[0]
             
-            self.logger.info(f"Prediction for {ticker}: {prediction} (prob: {probability:.4f})")
+            # Handle multi-class or multi-output if necessary, though XGBClassifier.predict usually gives 0/1
+            # but booster.predict gives probabilities [prob_0, prob_1] or just prob_1
+            if isinstance(output, (list, np.ndarray)) and len(output) > 1:
+                probability = float(output[1])
+            else:
+                probability = float(output)
+                
+            prediction = 1 if probability > 0.5 else 0
+            self.logger.info(f"Generated prediction for {ticker}: {prediction} (prob: {probability:.4f})")
         except Exception as e:
             self.logger.error(f"Prediction error for {ticker}: {e}")
-            import traceback
-            traceback.print_exc()
-            return self._hold_signal(ticker, latest_date, f"prediction_error: {str(e)[:50]}")
+            return self._hold_signal(ticker, latest_date, f"prediction_error: {str(e)}")
         
         # Calculate confidence (0-100 scale)
         confidence = max(probability, 1 - probability) * 100
@@ -355,6 +357,11 @@ class SignalGenerator:
             avg_atr=avg_atr
         )
         
+        # Calculate pips correctly for Gold vs Forex
+        pip_multiplier = 10000
+        if current_price > 100:  # Gold/Commodity
+            pip_multiplier = 10   # $1.00 move = 10 "pips" (0.10 increments)
+            
         # Build signal
         signal = {
             'ticker': ticker,
@@ -368,8 +375,8 @@ class SignalGenerator:
             'stop_loss': float(round(stop_loss, 5)),
             'take_profit': float(round(take_profit, 5)),
             'position_size': float(round(position_size, 2)),
-            'risk_pips': float(round(abs(current_price - stop_loss) * 10000, 1)),
-            'reward_pips': float(round(abs(take_profit - current_price) * 10000, 1)),
+            'risk_pips': float(round(abs(current_price - stop_loss) * pip_multiplier, 1)),
+            'reward_pips': float(round(abs(take_profit - current_price) * pip_multiplier, 1)),
             'atr': float(round(current_atr, 5)),
             'probability': float(round(probability, 4)),
             'filter_status': 'passed'
