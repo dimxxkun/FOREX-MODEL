@@ -26,6 +26,8 @@ import numpy as np
 import pandas as pd
 import joblib
 import yaml
+import yfinance as yf
+import xgboost as xgb
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).parent
@@ -73,8 +75,8 @@ class SignalGenerator:
         self.signal_filter = SignalFilter(self.config)
         self.risk_manager = RiskManager(config_path)
         
-        # Load trained model
-        self.model = self._load_model()
+        # Load trained models (dictionary of ticker -> model)
+        self.models = self._load_all_models()
         
         # Tickers
         self.tickers = [
@@ -88,23 +90,39 @@ class SignalGenerator:
         
         self.logger.info("SignalGenerator initialized")
     
-    def _load_model(self) -> object:
-        """Load trained model or train a simple one on the fly."""
+    def _load_all_models(self) -> Dict[str, object]:
+        """Load trained models for all tickers."""
+        models = {}
+        for ticker in self.config['data']['tickers']['main']:
+            ticker_clean = ticker.replace('=X', '').replace('^', '').replace('-', '_').replace('.', '_')
+            model = self._load_ticker_model(ticker, ticker_clean)
+            models[ticker_clean] = model
+        return models
+
+    def _load_ticker_model(self, ticker_raw: str, ticker_clean: str) -> object:
+        """Load trained model for a specific ticker."""
         model_paths = [
+            PROJECT_ROOT / 'models' / f'xgboost_{ticker_clean}.pkl',
+            PROJECT_ROOT / 'models' / 'ensemble' / f'xgboost_{ticker_clean}.pkl',
+            PROJECT_ROOT / 'models' / 'optimized' / f'xgboost_optimized_{ticker_clean.replace("_X", "")}.pkl',
             PROJECT_ROOT / 'results' / 'walk_forward' / 'best_wf_model.pkl',
-            PROJECT_ROOT / 'models' / 'xgboost_GBPUSD_X.pkl',
-            PROJECT_ROOT / 'models' / 'optimized' / 'xgboost_optimized_GBPUSD.pkl',
-            PROJECT_ROOT / 'notebooks' / 'models' / 'xgboost_GBPUSD_X.pkl',
+            PROJECT_ROOT / 'notebooks' / 'models' / f'xgboost_{ticker_clean}.pkl',
         ]
         
         # Try loading existing models
         for path in model_paths:
             if path.exists():
                 try:
-                    self.logger.info(f"Trying to load model from {path}")
+                    self.logger.info(f"Trying to load model for {ticker_clean} from {path}")
                     import pickle
                     with open(path, 'rb') as f:
                         model = pickle.load(f)
+                    if isinstance(model, dict) and 'model' in model:
+                        actual_model = model['model']
+                        # Store feature names if available in dict
+                        if 'feature_names' in model:
+                            actual_model.feature_names_from_dict = model['feature_names']
+                        return actual_model
                     if hasattr(model, 'predict'):
                         return model
                 except Exception as e:
@@ -112,22 +130,29 @@ class SignalGenerator:
                     continue
         
         # Fallback: Train a simple model on the fly
-        self.logger.warning("No loadable model found. Training quick XGBoost model...")
-        return self._train_quick_model()
+        self.logger.warning(f"No loadable model found for {ticker_clean}. Training quick XGBoost model...")
+        return self._train_quick_model(ticker_raw, ticker_clean)
     
-    def _train_quick_model(self):
+    def _train_quick_model(self, ticker_raw: str, ticker_clean: str):
         """Train a quick XGBoost model for signal generation."""
         from xgboost import XGBClassifier
         
         # Load features
         features_path = PROJECT_ROOT / 'data' / 'processed' / 'features.parquet'
         if not features_path.exists():
-            raise FileNotFoundError(f"Features not found: {features_path}")
-        
-        df = pd.read_parquet(features_path)
+            # If features don't exist, we might need to run the pipeline
+            self.logger.info("Features file not found, running pipeline for training data...")
+            combined = self.data_pipeline.run_full_pipeline()
+            df = self.feature_engine.run_full_pipeline(combined)
+        else:
+            df = pd.read_parquet(features_path)
         
         # Prepare data
-        target_col = 'GBPUSD_Target_Direction'
+        target_col = f'{ticker_clean}_Target_Direction'
+        if target_col not in df.columns:
+            # Fallback to GBPUSD if specific ticker target not found (for safety)
+            target_col = 'GBPUSD_Target_Direction'
+            
         feature_cols = [c for c in df.columns if 'Target' not in c and c not in ['Date']]
         
         df_clean = df.dropna(subset=[target_col])
@@ -149,7 +174,7 @@ class SignalGenerator:
         )
         model.fit(X_train, y_train)
         
-        self.logger.info(f"Trained quick model with {len(X_train)} samples")
+        self.logger.info(f"Trained quick model for {ticker_clean} with {len(X_train)} samples")
         return model
     
     def get_latest_data(self, lookback_days: int = 300) -> pd.DataFrame:
@@ -209,33 +234,86 @@ class SignalGenerator:
         # Prepare features for prediction
         X = df[feature_cols].iloc[[-1]].fillna(0)
         
+        # Prepare features for prediction
+        X = df[feature_cols].iloc[[-1]].fillna(0)
+        
+        # Get ticker-specific model
+        model = self.models.get(ticker)
+        if model is None:
+            self.logger.error(f"No model found for {ticker}")
+            return self._hold_signal(ticker, latest_date, "no_model")
+
         # Align features with model
         try:
-            model_features = self.model.get_booster().feature_names
-            # Add missing features
+            # Check if we stored feature names in our custom attribute or booster
+            if hasattr(model, 'feature_names_from_dict'):
+                model_features = model.feature_names_from_dict
+                self.logger.info(f"Using feature names from dict for {ticker}: {len(model_features)} features")
+            else:
+                model_features = model.get_booster().feature_names
+                self.logger.info(f"Using feature names from booster for {ticker}: {len(model_features)} features")
+            
+            # Create a new DataFrame with ONLY the columns the model expects, in the correct order
+            X_aligned = pd.DataFrame(index=X.index)
             for feat in model_features:
-                if feat not in X.columns:
-                    X[feat] = 0
-            X = X[model_features]
-        except:
-            pass  # Not all models have feature_names
-        
+                if feat in X.columns:
+                    X_aligned[feat] = X[feat]
+                else:
+                    # Feature expected by model but missing in current data
+                    X_aligned[feat] = 0.0
+            
+            X = X_aligned
+            self.logger.info(f"Features aligned for {ticker}. Shape: {X.shape}")
+        except Exception as e:
+            self.logger.warning(f"Could not align features for {ticker}: {e}")
+            # If alignment fails, we still try with what we have (though it might fail prediction)
+            pass
+
         # Get prediction
         try:
-            prediction = self.model.predict(X)[0]
-            probability = self.model.predict_proba(X)[0, 1]
+            # Use native booster to bypass scikit-learn wrapper strictness on feature names
+            dmatrix = xgb.DMatrix(X)
+            # prediction results from booster.predict is probabilities for binary classification
+            probability = model.get_booster().predict(dmatrix)[0]
+            prediction = 1 if probability > 0.5 else 0
+            
+            self.logger.info(f"Prediction for {ticker}: {prediction} (prob: {probability:.4f})")
         except Exception as e:
-            self.logger.error(f"Prediction error: {e}")
-            return self._hold_signal(ticker, latest_date, "prediction_error")
+            self.logger.error(f"Prediction error for {ticker}: {e}")
+            import traceback
+            traceback.print_exc()
+            return self._hold_signal(ticker, latest_date, f"prediction_error: {str(e)[:50]}")
         
         # Calculate confidence (0-100 scale)
-        confidence = abs(probability - 0.5) * 2 * 100
+        confidence = max(probability, 1 - probability) * 100
         
-        # Get current price and ATR
-        close_col = f'{ticker}_Close'
+        # Get REAL-TIME price from yfinance
+        try:
+            raw_ticker = ticker
+            # Reverse cleaning for yfinance
+            for rt in self.config['data']['tickers']['main']:
+                if rt.replace('=X', '').replace('^', '').replace('-', '_').replace('.', '_') == ticker:
+                    raw_ticker = rt
+                    break
+            
+            self.logger.info(f"Fetching live price for {raw_ticker}...")
+            live_data = yf.download(raw_ticker, period='1d', interval='1m', progress=False)
+            if not live_data.empty:
+                # Handle multi-index columns if they exist
+                if isinstance(live_data.columns, pd.MultiIndex):
+                    current_price = float(live_data['Close'][raw_ticker].iloc[-1])
+                else:
+                    current_price = float(live_data['Close'].iloc[-1])
+                self.logger.info(f"Live Price for {ticker}: {current_price}")
+            else:
+                current_price = float(latest.get(f'{ticker}_Close', 0))
+                self.logger.warning(f"Could not fetch live price for {ticker}, using stale price: {current_price}")
+        except Exception as e:
+            self.logger.error(f"Error fetching live price for {ticker}: {e}")
+            current_price = float(latest.get(f'{ticker}_Close', 0))
+        
+        # Get ATR from features
         atr_col = f'{ticker}_ATR'
-        
-        current_price = latest.get(close_col, 0)
         current_atr = latest.get(atr_col, current_price * 0.01)
         
         if current_price == 0:
@@ -249,6 +327,7 @@ class SignalGenerator:
         filtered_signal, adj_confidence, reason = self.signal_filter.filter_signal(
             signal=prediction,
             confidence=confidence,
+            ticker=ticker,
             regime=regime_str,
             current_date=latest_date
         )
@@ -282,17 +361,17 @@ class SignalGenerator:
             'date': str(latest_date.date()),
             'timestamp': datetime.now().isoformat(),
             'signal': 'BUY' if prediction == 1 else 'SELL',
-            'direction': direction,
-            'confidence': round(confidence, 1),
+            'direction': int(direction),
+            'confidence': float(round(confidence, 1)),
             'regime': regime_str,
-            'entry_price': round(current_price, 5),
-            'stop_loss': round(stop_loss, 5),
-            'take_profit': round(take_profit, 5),
-            'position_size': round(position_size, 2),
-            'risk_pips': round(abs(current_price - stop_loss) * 10000, 1),
-            'reward_pips': round(abs(take_profit - current_price) * 10000, 1),
-            'atr': round(current_atr, 5),
-            'probability': round(probability, 4),
+            'entry_price': float(round(current_price, 5)),
+            'stop_loss': float(round(stop_loss, 5)),
+            'take_profit': float(round(take_profit, 5)),
+            'position_size': float(round(position_size, 2)),
+            'risk_pips': float(round(abs(current_price - stop_loss) * 10000, 1)),
+            'reward_pips': float(round(abs(take_profit - current_price) * 10000, 1)),
+            'atr': float(round(current_atr, 5)),
+            'probability': float(round(probability, 4)),
             'filter_status': 'passed'
         }
         

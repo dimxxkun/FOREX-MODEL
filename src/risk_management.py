@@ -129,16 +129,18 @@ class RiskManager:
         entry_price: float,
         atr: float,
         direction: int,
-        multiplier: Optional[float] = None
+        multiplier: Optional[float] = None,
+        max_stop_pips: float = 20.0
     ) -> float:
         """
-        Calculate stop loss price based on ATR.
+        Calculate stop loss price based on ATR, with maximum cap.
         
         Args:
             entry_price: Entry price.
             atr: Average True Range value.
             direction: 1 for LONG, -1 for SHORT.
             multiplier: ATR multiplier (default from config).
+            max_stop_pips: Maximum stop loss in pips (default 20).
         
         Returns:
             Stop loss price.
@@ -147,6 +149,16 @@ class RiskManager:
             multiplier = self.atr_stop_multiplier
         
         stop_distance = atr * multiplier
+        
+        # Cap stop loss at max_stop_pips for forex pairs
+        # Convert pips to price: 1 pip = 0.0001 for most forex pairs
+        max_stop_distance = max_stop_pips * 0.0001
+        
+        # For gold (GC=F), 1 pip = $0.10, but price is ~2000, so use 0.0001 * price
+        if entry_price > 100:  # Likely gold or similar
+            max_stop_distance = max_stop_pips * 0.10
+        
+        stop_distance = min(stop_distance, max_stop_distance)
         
         if direction == 1:  # LONG
             stop_loss = entry_price - stop_distance

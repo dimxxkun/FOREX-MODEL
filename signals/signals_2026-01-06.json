@@ -1,0 +1,60 @@
+{
+  "generated_at": "2026-01-06T09:28:31.405713",
+  "account_value": 10000,
+  "signals": [
+    {
+      "ticker": "GBPUSD",
+      "date": "2026-01-05",
+      "timestamp": "2026-01-06T09:28:30.089548",
+      "signal": "BUY",
+      "direction": 1,
+      "confidence": 75.0,
+      "regime": "low_volatility",
+      "entry_price": 1.35533,
+      "stop_loss": 1.35333,
+      "take_profit": 1.35833,
+      "position_size": 1475.66,
+      "risk_pips": 20.0,
+      "reward_pips": 30.0,
+      "atr": 0.00803,
+      "probability": 0.7498999834060669,
+      "filter_status": "passed"
+    },
+    {
+      "ticker": "EURUSD",
+      "date": "2026-01-05",
+      "timestamp": "2026-01-06T09:28:30.690159",
+      "signal": "BUY",
+      "direction": 1,
+      "confidence": 63.900001525878906,
+      "regime": "low_volatility",
+      "entry_price": 1.17316,
+      "stop_loss": 1.17116,
+      "take_profit": 1.17616,
+      "position_size": 1704.8,
+      "risk_pips": 20.0,
+      "reward_pips": 30.0,
+      "atr": 0.00537,
+      "probability": 0.638700008392334,
+      "filter_status": "passed"
+    },
+    {
+      "ticker": "GC=F",
+      "date": "2026-01-05",
+      "timestamp": "2026-01-06T09:28:31.405224",
+      "signal": "BUY",
+      "direction": 1,
+      "confidence": 63.900001525878906,
+      "regime": "low_volatility",
+      "entry_price": 4474.7002,
+      "stop_loss": 4472.7002,
+      "take_profit": 4477.7002,
+      "position_size": 0.45,
+      "risk_pips": 20000.0,
+      "reward_pips": 30000.0,
+      "atr": 67.81297,
+      "probability": 0.638700008392334,
+      "filter_status": "passed"
+    }
+  ]
+}

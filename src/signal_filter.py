@@ -50,8 +50,8 @@ class SignalFilter:
         # Risk-reward minimum ratio
         self.min_risk_reward = filter_config.get('min_risk_reward', 1.5)
         
-        # Track last trade date
-        self.last_trade_date = None
+        # Track last trade dates per ticker
+        self.last_trade_dates = {}
         
         # Statistics
         self.stats = {
@@ -65,7 +65,7 @@ class SignalFilter:
     def reset_stats(self):
         """Reset filter statistics."""
         self.stats = {k: 0 for k in self.stats}
-        self.last_trade_date = None
+        self.last_trade_dates = {}  # Per-ticker tracking
         
     def check_confidence(
         self,
@@ -121,26 +121,29 @@ class SignalFilter:
     
     def check_trade_frequency(
         self,
-        current_date: datetime
+        current_date: datetime,
+        ticker: str = "default"
     ) -> bool:
         """
-        Check if enough time has passed since last trade.
+        Check if enough time has passed since last trade for this ticker.
         
         Args:
             current_date: Date of proposed trade
+            ticker: Ticker symbol
             
         Returns:
             True if minimum gap has passed
         """
-        if self.last_trade_date is None:
+        last_date = self.last_trade_dates.get(ticker)
+        if last_date is None:
             return True
             
         if isinstance(current_date, str):
             current_date = pd.to_datetime(current_date)
-        if isinstance(self.last_trade_date, str):
-            self.last_trade_date = pd.to_datetime(self.last_trade_date)
+        if isinstance(last_date, str):
+            last_date = pd.to_datetime(last_date)
             
-        days_since = (current_date - self.last_trade_date).days
+        days_since = (current_date - last_date).days
         passes = days_since >= self.min_trade_gap
         
         if passes:
@@ -184,6 +187,7 @@ class SignalFilter:
         self,
         signal: int,
         confidence: float,
+        ticker: str = "default",
         regime: Optional[str] = None,
         current_date: Optional[datetime] = None,
         entry_price: Optional[float] = None,
@@ -220,7 +224,7 @@ class SignalFilter:
             return -1, confidence, f"unfavorable_regime_{regime}"
             
         # Check 3: Trade frequency
-        if current_date is not None and not self.check_trade_frequency(current_date):
+        if current_date is not None and not self.check_trade_frequency(current_date, ticker):
             return -1, confidence, "too_frequent"
             
         # Check 4: Risk-reward (if prices provided)
@@ -231,7 +235,7 @@ class SignalFilter:
         # All checks passed
         self.stats['final_passed'] += 1
         if current_date is not None:
-            self.last_trade_date = current_date
+            self.last_trade_dates[ticker] = current_date
             
         return signal, confidence, "passed"
     

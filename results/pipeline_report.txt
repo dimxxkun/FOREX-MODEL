@@ -1,14 +1,14 @@
 ============================================================
 FOREX SIGNAL MODEL - PIPELINE REPORT
 ============================================================
-Generated: 2026-01-05T10:55:35.879775
-Execution time: 7.2 seconds
+Generated: 2026-01-06T08:53:13.656040
+Execution time: 15.4 seconds
 
 DATA SUMMARY
 ----------------------------------------
 Combined data shape: (2510, 213)
 Feature matrix shape: (1509, 213)
-Date range: 2020-01-03 00:00:00 to 2026-01-02 00:00:00
+Date range: 2020-01-06 00:00:00 to 2026-01-05 00:00:00
 Total trading days: 1509
 
 FEATURE COLUMNS
