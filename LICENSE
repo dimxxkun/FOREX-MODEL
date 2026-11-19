@@ -1,0 +1,94 @@
+Noncommercial Use and Commercial Permission License
+Version 1.0
+SPDX-License-Identifier: LicenseRef-Noncommercial-Commercial-Permission-1.0
+
+Copyright (c) 2026 Sanusi Abdulfatai Oyewunmi
+
+1. Scope and definitions
+
+"Material" means the original software, documentation, and other original
+material that the copyright holders make available under this License.
+"Licensor" means the copyright holders granting rights under this License.
+"You" means the person or entity exercising those rights.
+
+This License covers only rights the Licensor is entitled to grant. Third-party
+software, dependencies, datasets, pretrained models, fonts, photographs, logos,
+and other separately licensed material retain their own terms. Their inclusion,
+reference, or use with the Material does not relicense them. Existing copyright,
+attribution, and third-party notices must be retained.
+
+2. Free noncommercial permission
+
+Subject to this License, the Licensor grants You a worldwide, nonexclusive,
+royalty-free permission to use, reproduce, study, modify, display, and distribute
+the Material and modifications for Noncommercial Use.
+
+"Noncommercial Use" means use that is not primarily intended for or directed
+toward commercial advantage or monetary compensation. Examples include personal
+learning, hobby projects, and teaching or research without a commercial purpose.
+An organization's nonprofit, educational, or government status does not by itself
+make every use noncommercial; the purpose of the particular use controls.
+
+Reviewing and running the Material solely to assess the author's portfolio,
+skills, or suitability for employment is also permitted without a fee. This
+exception does not permit incorporating the Material into a business product,
+service, client deliverable, or internal business operation.
+
+3. Commercial use requires a separate agreement
+
+No Commercial Use is licensed by this License. Before any Commercial Use, You
+must obtain prior written permission from the Licensor or an authorized
+representative and enter into a separate written commercial license agreement
+that specifies the authorized scope and the mutually agreed fee and payment
+terms. Silence, public availability, attribution, a donation, or payment alone
+does not grant commercial permission. No fee is imposed automatically.
+
+"Commercial Use" includes use for commercial advantage or monetary compensation,
+including paid client work; internal business operations; incorporation into a
+commercial product or service; selling or licensing copies or modifications;
+and operating a paid, advertising-supported, or otherwise monetized service
+that uses the Material. The portfolio-review exception in section 2 still applies.
+
+Commercial permission contact: work.abdulfatai@gmail.com
+Identify the repository, intended use, distribution or hosting model, and scope
+when requesting terms. Permission from one rights holder does not grant rights
+owned by other parties unless that rights holder is authorized to grant them.
+
+4. Conditions on copies and modifications
+
+Keep this License and all applicable copyright and attribution notices with
+copies and substantial portions of the Material. Clearly identify modifications
+You distribute. You may not grant recipients broader rights in the Licensor's
+Material than this License permits without separate written authorization.
+Recipients may exercise the permissions in this License directly from the
+Licensor. No trademark, endorsement, or patent license is granted by this License.
+
+5. Earlier licenses and independent rights
+
+This License applies from the repository revision that introduces it. It does
+not revoke, narrow, or replace permissions already granted for copies or versions
+previously offered under another license. Recipients with valid rights under an
+earlier license may continue to rely on those rights for the material covered.
+This License does not limit fair use, fair dealing, or other rights that apply
+independently of permission from the Licensor.
+
+6. Termination
+
+The permissions granted by this License terminate if You violate its conditions.
+After termination, You must stop activities that require permission under this
+License, unless the Licensor reinstates that permission in writing. Termination
+does not affect third parties who received copies and remain in compliance, or
+any independent rights described in section 5.
+
+7. No warranty; limitation of liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE MATERIAL IS PROVIDED
+"AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE AUTHORS AND COPYRIGHT
+HOLDERS ARE NOT LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM,
+OUT OF, OR IN CONNECTION WITH THE MATERIAL OR ITS USE, WHETHER IN CONTRACT,
+TORT, OR OTHERWISE.
+
+These are custom source-available terms with a noncommercial restriction;
+they are not an OSI-approved open-source license.
